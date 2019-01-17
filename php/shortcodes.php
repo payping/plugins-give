@@ -43,7 +43,7 @@ function payping_redirect_handler() {
 		    give_update_payment_status( $payment_id, 'failed' );
 		    $_SESSION['payping_massage'] = $err ;
 		    $_SESSION['payping_refid'] = $_GET['refid'] ;
-		    wp_redirect(get_site_url() . '/payping-pay-failed');
+		    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 	    } else {
 		    if ($header['http_code'] == 200) {
 			    $response = json_decode($response, true);
@@ -51,13 +51,13 @@ function payping_redirect_handler() {
 				    give_update_payment_status( $payment_id, 'publish' );
 				    $_SESSION['payping_massage'] = 'پرداخت موفقیت آمیز بود.' ;
 				    $_SESSION['payping_refid'] = $_GET['refid'] ;
-				    wp_redirect(get_site_url() . '/payping-pay-success');
+				    wp_redirect(get_permalink( $settings['paypingPaySuccessPage'] ));
 			    } else {
 				    $Message = status_message($header['http_code']) . '(' . $header['http_code'] . ')' ;
 				    give_update_payment_status( $payment_id, 'failed' );
 				    $_SESSION['payping_massage'] = $Message ;
 				    $_SESSION['payping_refid'] = $_GET['refid'] ;
-				    wp_redirect(get_site_url() . '/payping-pay-failed');
+				    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 			    }
 		    } elseif ($header['http_code'] == 400) {
 			    $Message =  implode('. ',array_values (json_decode($response,true))) ;
@@ -65,13 +65,13 @@ function payping_redirect_handler() {
 			    $_SESSION['payping_massage'] = $Message ;
 			    $_SESSION['payping_refid'] = $_GET['refid'] ;
 
-			    wp_redirect(get_site_url() . '/payping-pay-failed');
+			    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 		    }  else {
 			    $Message = status_message($header['http_code']) . '(' . $header['http_code'] . ')';
 			    give_update_payment_status( $payment_id, 'failed' );
 			    $_SESSION['payping_massage'] = $Message ;
 			    $_SESSION['payping_refid'] = $_GET['refid'] ;
-			    wp_redirect(get_site_url() . '/payping-pay-failed');
+			    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 		    }
 	    }
     } catch (Exception $e){
