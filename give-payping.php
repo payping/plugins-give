@@ -59,6 +59,8 @@ function give_payping_install()
         ));
         $post_id = $wpdb->insert_id;
         $options['paypingRedirectPage'] = $post_id;
+    } else {
+        $options['paypingRedirectPage'] = $row->ID;
     }
     
     $row = $wpdb->get_row(
@@ -77,6 +79,8 @@ function give_payping_install()
         ));
         $post_id = $wpdb->insert_id;
         $options['paypingPaySuccessPage'] = $post_id;
+    } else {
+        $options['paypingPaySuccessPage'] = $row->ID;
     }
     
     $row = $wpdb->get_row(
@@ -95,6 +99,8 @@ function give_payping_install()
         ));
         $post_id = $wpdb->insert_id;
         $options['paypingPayFailedPage'] = $post_id;
+    } else {
+        $options['paypingPayFailedPage'] = $row->ID;
     }
     
     $row = $wpdb->get_row(
@@ -113,6 +119,8 @@ function give_payping_install()
         ));
         $post_id = $wpdb->insert_id;
         $options['paypingPayCancledPage'] = $post_id;
+    } else {
+        $options['paypingPayCancledPage'] = $row->ID;
     }
     
     update_option(OPTION_KEY, $options);
