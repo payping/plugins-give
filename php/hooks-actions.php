@@ -109,22 +109,6 @@ function give_payping_process_payping_purchase( $purchase_data )
 
 
 
-
-
-			function getCurrentURL(){
-				$currentURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://";
-				$currentURL .= $_SERVER["SERVER_NAME"];
-
-				if($_SERVER["SERVER_PORT"] != "80" && $_SERVER["SERVER_PORT"] != "443")
-				{
-					$currentURL .= ":".$_SERVER["SERVER_PORT"];
-				}
-
-				$currentURL .= $_SERVER["REQUEST_URI"];
-				return $currentURL;
-			}
-
-
 			$callBackUrl = get_permalink( $settings['paypingRedirectPage'] ) ;
 
 			if ( give_get_currency() == 'IRR' )
@@ -150,22 +134,22 @@ function give_payping_process_payping_purchase( $purchase_data )
 						} else {
 							$Message = 'عدم وجود کد ارجاع ';
 							$_SESSION['payping_massage'] = $Message ;
-							wp_redirect(get_site_url() . '/payping-pay-failed');
+							wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 						}
 					} elseif ($header['http_code'] == 400) {
 						$Message =  implode('. ',array_values (json_decode($response,true))) ;
 						$_SESSION['payping_massage'] = $Message ;
-						wp_redirect(get_site_url() . '/payping-pay-failed');
+						wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 					} else {
 						$Message = status_message($header['http_code']) . '(' . $header['http_code'] . ')';
 						$_SESSION['payping_massage'] = $Message ;
-						wp_redirect(get_site_url() . '/payping-pay-failed');
+						wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 					}
 				}
 			} catch (Exception $e){
 				$Message = $e->getMessage();
 				$_SESSION['payping_massage'] = $Message ;
-				wp_redirect(get_site_url() . '/payping-pay-failed');
+				wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 			}
 
 		}
