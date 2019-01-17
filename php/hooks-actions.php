@@ -125,7 +125,7 @@ function give_payping_process_payping_purchase( $purchase_data )
 			}
 
 
-			$callBackUrl = get_site_url() . '/payping-callback';
+			$callBackUrl = get_permalink( $settings['paypingRedirectPage'] ) ;
 
 			if ( give_get_currency() == 'IRR' )
 				$Amount = $purchase_data['price'] / 10 ;
