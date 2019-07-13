@@ -1,16 +1,15 @@
 <?php
 
-add_shortcode('payping_redirect', 'payping_redirect_handler');
+add_action('init', 'payping_redirect_handler');
 function payping_redirect_handler() {
-    
+    if(!isset($_GET['refid']) && !isset($_GET['clientrefid'])){
+	return;
+    }
     global $givePaypingOptions;
 	$token = get_option('givePaypingOptions', $givePaypingOptions)['givePayping_PaypingG_Token'];
 	$settings = get_option(OPTION_KEY, $givePaypingOptions);
     
     $payment_id   = $_GET['clientrefid'];
-
-
-
 
     $Amount = give_get_payment_amount($payment_id);
 
@@ -42,46 +41,43 @@ function payping_redirect_handler() {
 
 	    if ($err) {
 		    give_update_payment_status( $payment_id, 'failed' );
-		    $_SESSION['payping_massage'] = $err ;
-		    $_SESSION['payping_refid'] = $_GET['refid'] ;
+		    //$_SESSION['payping_massage'] = $err ;
+		    //$_SESSION['payping_refid'] = $_GET['refid'] ;
 		    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 	    } else {
 		    if ($header['http_code'] == 200) {
 			    $response = json_decode($response, true);
 			    if (isset($_GET["refid"]) and $_GET["refid"] != '') {
 				    give_update_payment_status( $payment_id, 'publish' );
-				    $_SESSION['payping_massage'] = 'پرداخت موفقیت آمیز بود.' ;
-				    $_SESSION['payping_refid'] = $_GET['refid'] ;
-				    wp_redirect(get_permalink( $settings['paypingPaySuccessPage'] ));
+				     give_send_to_success_page();
 			    } else {
 				    $Message = status_message($header['http_code']) . '(' . $header['http_code'] . ')' ;
 				    give_update_payment_status( $payment_id, 'failed' );
-				    $_SESSION['payping_massage'] = $Message ;
-				    $_SESSION['payping_refid'] = $_GET['refid'] ;
+				    //$_SESSION['payping_massage'] = $Message ;
+				    //$_SESSION['payping_refid'] = $_GET['refid'] ;
 				    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 			    }
 		    } elseif ($header['http_code'] == 400) {
 			    $Message =  implode('. ',array_values (json_decode($response,true))) ;
 			    give_update_payment_status( $payment_id, 'failed' );
-			    $_SESSION['payping_massage'] = $Message ;
-			    $_SESSION['payping_refid'] = $_GET['refid'] ;
-
+			    //$_SESSION['payping_massage'] = $Message ;
+			    //$_SESSION['payping_refid'] = $_GET['refid'] ;
 			    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 		    }  else {
 			    $Message = status_message($header['http_code']) . '(' . $header['http_code'] . ')';
 			    give_update_payment_status( $payment_id, 'failed' );
-			    $_SESSION['payping_massage'] = $Message ;
-			    $_SESSION['payping_refid'] = $_GET['refid'] ;
+			    //$_SESSION['payping_massage'] = $Message ;
+			    //$_SESSION['payping_refid'] = $_GET['refid'] ;
 			    wp_redirect(get_permalink( $settings['paypingPayFailedPage'] ));
 		    }
 	    }
     } catch (Exception $e){
 	    give_update_payment_status( $payment_id, 'failed' );
-	    $_SESSION['payping_massage'] = $e->getMessage() ;
-	    $_SESSION['payping_refid'] = $_GET['refid'] ;
+	    //$_SESSION['payping_massage'] = $e->getMessage() ;
+	    //$_SESSION['payping_refid'] = $_GET['refid'] ;
 	    wp_redirect(get_site_url() . '/payping-pay-failed');
     }
-
+	die();
 }
 
 if ( !function_exists('status_message')) {
