@@ -22,7 +22,8 @@ add_action( 'give_gateway_payping', 'give_payping_process_payping_purchase' );
 function give_payping_process_payping_purchase( $purchase_data )
 {
 	global $givePaypingOptions;
-	$settings = get_option('givePaypingOptions', $givePaypingOptions);
+	$token = get_option('givePaypingOptions', $givePaypingOptions)['givePayping_PaypingG_Token'];
+	$settings = get_option(OPTION_KEY, $givePaypingOptions);
 
 	if (!isset($_POST['ResCode'])){
 		if ( ! wp_verify_nonce( $purchase_data['gateway_nonce'], 'give-gateway' ) ) {
@@ -118,7 +119,7 @@ function give_payping_process_payping_purchase( $purchase_data )
 			$dataSend = array( 'Amount' => $Amount,'payerIdentity'=> $purchase_data['user_email'] , 'returnUrl' => $callBackUrl, 'Description' => $purchase_data['post_data']['give-form-title'] , 'clientRefId' => $payment );
 			try {
 				$curl = curl_init();
-				curl_setopt_array($curl, array(CURLOPT_URL => "https://api.payping.ir/v1/pay", CURLOPT_RETURNTRANSFER => true, CURLOPT_ENCODING => "", CURLOPT_MAXREDIRS => 10, CURLOPT_TIMEOUT => 30, CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1, CURLOPT_CUSTOMREQUEST => "POST", CURLOPT_POSTFIELDS => json_encode($dataSend), CURLOPT_HTTPHEADER => array("accept: application/json", "authorization: Bearer " . $settings['givePayping_PaypingG_Token'], "cache-control: no-cache", "content-type: application/json"),));
+				curl_setopt_array($curl, array(CURLOPT_URL => "https://api.payping.ir/v1/pay", CURLOPT_RETURNTRANSFER => true, CURLOPT_ENCODING => "", CURLOPT_MAXREDIRS => 10, CURLOPT_TIMEOUT => 30, CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1, CURLOPT_CUSTOMREQUEST => "POST", CURLOPT_POSTFIELDS => json_encode($dataSend), CURLOPT_HTTPHEADER => array("accept: application/json", "authorization: Bearer " . $token, "cache-control: no-cache", "content-type: application/json"),));
 				$response = curl_exec($curl);
 				$header = curl_getinfo($curl);
 				$err = curl_error($curl);

@@ -22,7 +22,7 @@ register_deactivation_hook(__FILE__, 'give_payping_remove');
 
 if (!class_exists('GivePayping')) {
     class GivePayping {
-        function GivePayping() {
+        function __constructor() {
         }
     }
 }

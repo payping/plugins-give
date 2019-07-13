@@ -4,7 +4,8 @@ add_shortcode('payping_redirect', 'payping_redirect_handler');
 function payping_redirect_handler() {
     
     global $givePaypingOptions;
-    $settings = get_option('givePaypingOptions', $givePaypingOptions);
+	$token = get_option('givePaypingOptions', $givePaypingOptions)['givePayping_PaypingG_Token'];
+	$settings = get_option(OPTION_KEY, $givePaypingOptions);
     
     $payment_id   = $_GET['clientrefid'];
 
@@ -29,7 +30,7 @@ function payping_redirect_handler() {
 		    CURLOPT_POSTFIELDS => json_encode($data),
 		    CURLOPT_HTTPHEADER => array(
 			    "accept: application/json",
-			    "authorization: Bearer ".$settings['givePayping_PaypingG_Token'],
+			    "authorization: Bearer ".$token,
 			    "cache-control: no-cache",
 			    "content-type: application/json",
 		    ),
