@@ -1,5 +1,5 @@
 <?php
-const OPTION_KEY = 'givePaypingOptions';
+const OPTION_KEY = 'givePaypingPages';
 
 function setGivePaypingOptions()
 {
